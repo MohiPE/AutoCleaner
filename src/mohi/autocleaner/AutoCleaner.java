@@ -26,9 +26,9 @@ public class AutoCleaner extends PluginBase implements Listener {
 	
 	@Override
 	public void onEnable() {
-		this.config = (new Config( getDataFolder() + "/config.yml", Config.YAML, new LinkedHashMap<String, String> {
+		this.config = (new Config( getDataFolder() + "/config.yml", Config.YAML, new LinkedHashMap<String, String>() {
 			put( "Tree planting", "on" );
-		}))->getAll();	
+		})).getAll();	
 		getServer().getPluginManager().registerEvents( this, this );
 		getServer().getScheduler().scheduleRepeatingTask(new AutoCleanerTask(this), 20 * 60 * 2);
 	}
