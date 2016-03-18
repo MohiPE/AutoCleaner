@@ -26,10 +26,11 @@ public class AutoCleaner extends PluginBase implements Listener {
 	
 	@Override
 	public void onEnable() {
-		this.config = (new Config(getDataFolder() + "/config.yml", Config.YAML, new LinkedHashMap<String, String> {
+		this.config = (new Config( getDataFolder() + "/config.yml", Config.YAML, new LinkedHashMap<String, String> {
 			put( "Tree planting", "on" );
-		}))->getAll();
+		}))->getAll();	
 		getServer().getPluginManager().registerEvents( this, this );
+		getServer().getScheduler().scheduleRepeatingTask(new AutoCleanerTask(this), 20 * 60 * 2);
 	}
 	public void onDisable() {
 		this.save();
@@ -37,7 +38,7 @@ public class AutoCleaner extends PluginBase implements Listener {
 	public boolean isOldEntity( Entity entity ) {
 		return oldEntities.contains( entity );
 	}
-	public void plantTree(Entity entity, Level level) {
+	public void plantTree( Entity entity, Level level) {
 		int x = (int) Math.round( entity.getX() );
 		int y = ((int) Math.round( entity.getY() )) - 1;
 		int z = (int) Math.round( entity.getZ() );

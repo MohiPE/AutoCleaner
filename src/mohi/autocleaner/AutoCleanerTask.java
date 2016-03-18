@@ -11,12 +11,12 @@ import cn.nukkit.plugin.Plugin;
 
 class AutoCleanerTask extends PluginTask {
 	Plugin owner;
-	public void AutoCleanerTask(Plugin plugin) {
+	
+	public void AutoCleanerTask( Plugin plugin ) {
 		super(plugin);
 	}
 	@Override
-	public void onRun(int currentTick) {
-		this.owner = getOwner();
+	public void onRun( int currentTick ) {
 		owner.entityCleaner();
 	}
 }
