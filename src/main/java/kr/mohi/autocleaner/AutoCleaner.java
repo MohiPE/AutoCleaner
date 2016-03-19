@@ -1,6 +1,6 @@
 /**
  * @author : MohiPE
- * @since : 2016.3.18
+ * @since : 2016.3.20
  * @email : dreamaker7770@gmail.com
  */
 
@@ -33,10 +33,11 @@ public class AutoCleaner extends PluginBase implements Listener {
 		this.config = (LinkedHashMap<String, Object>) (new Config( getDataFolder() + "/config.yml", Config.YAML, new LinkedHashMap<String, Object>() {
 			{
 				put( "Tree planting", true );
+				put( "sec", 120);
 			}
 		})).getAll();	
 		getServer().getPluginManager().registerEvents( this, this );
-		getServer().getScheduler().scheduleRepeatingTask(new AutoCleanerTask(this), 20 * 5);
+		getServer().getScheduler().scheduleRepeatingTask(new AutoCleanerTask(this), 20 * ((Integer) config.get("sec")).intValue());
 	}
 	public void onDisable() {
 		this.save();
@@ -45,13 +46,13 @@ public class AutoCleaner extends PluginBase implements Listener {
 		return oldEntities.contains( entity );
 	}
 	public void plantTree( Entity entity, Level level) {
-		int x = (int) Math.round( entity.getX() );
-		int y = ((int) Math.round( entity.getY() )) - 1;
-		int z = (int) Math.round( entity.getZ() );
+		int x = (int) entity.getX();
+		int y = ((int) entity.getY() ) - 1;
+		int z = (int) entity.getZ();
 		Vector3 vector3 = new Vector3( x, y, z );
 		NukkitRandom random = new NukkitRandom();
 		int meta = new Random().nextInt(6);
-		if(level.getBlock( vector3 ).getId() == 2 && level.getBlock( vector3 ).getId() == 3) {
+		if(level.getBlock( vector3 ).getId() == 2 || level.getBlock( vector3 ).getId() == 3) {
 			level.setBlock( vector3.add( 0, 1, 0 ) , Block.get( Block.SAPLING, meta ));
 			if(new Random().nextInt(2) == 0)
 				ObjectTree.growTree( level, (int) vector3.getX(), (int) vector3.getY(), (int) vector3.getZ(), random );
