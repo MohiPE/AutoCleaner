@@ -7,27 +7,31 @@
 
 package mohi.autocleaner;
 
-import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.event.Listener;
-import cn.nukkit.utils.Config;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.level.Level;
-import cn.nukkit.block.Block;
-import cn.nukkit.math.Vector3;
-import cn.nukkit.level.generator.object.tree.ObjectTree;
-import cn.nukkit.blockentity.BlockEntity;
-import cn.nukkit.entity.EntityCreature;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Random;
 
-import java.util.*;
+import cn.nukkit.block.Block;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.EntityCreature;
+import cn.nukkit.event.Listener;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.generator.object.tree.ObjectTree;
+import cn.nukkit.math.NukkitRandom;
+import cn.nukkit.math.Vector3;
+import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.utils.Config;
 
 public class AutoCleaner extends PluginBase implements Listener {
-	private Config config;
+	private LinkedHashMap<String, Object> config;
 	private LinkedList<Entity> oldEntities = new LinkedList<Entity>();
 	
 	@Override
 	public void onEnable() {
-		this.config = (new Config( getDataFolder() + "/config.yml", Config.YAML, new LinkedHashMap<String, String>() {
-			put( "Tree planting", "on" );
+		this.config = (LinkedHashMap<String, Object>) (new Config( getDataFolder() + "/config.yml", Config.YAML, new LinkedHashMap<String, Object>() {
+			{
+				put( "Tree planting", true );
+			}
 		})).getAll();	
 		getServer().getPluginManager().registerEvents( this, this );
 		getServer().getScheduler().scheduleRepeatingTask(new AutoCleanerTask(this), 20 * 60 * 2);
@@ -43,21 +47,21 @@ public class AutoCleaner extends PluginBase implements Listener {
 		int y = ((int) Math.round( entity.getY() )) - 1;
 		int z = (int) Math.round( entity.getZ() );
 		Vector3 vector3 = new Vector3( x, y, z );
-		int meta = (int) Random.nextInt( 6 );
-		if(level.getBlock( vector3 ) instanceof Block.get( Block.DIRT ) ) {
+		NukkitRandom random = new NukkitRandom();
+		int meta = new Random().nextInt(6);
+		if(level.getBlock( vector3 ).getId() == 2 && level.getBlock( vector3 ).getId() == 3) {
 			level.setBlock( vector3.add( 0, 1, 0 ) , Block.get( 6, meta ));
-			Random.nextInt(2) == 0 ? ObjectTree.growTree( level, vector3.getX(), vector3.getY(), vector3.getZ(), meta ) : return;
+			if(new Random().nextInt(2) == 0)
+				ObjectTree.growTree( level, (int) vector3.getX(), (int) vector3.getY(), (int) vector3.getZ(), random );
 			return;
 		}
 	}
 	public void entityCleaner() {
-		foreach( Level level : getServer().getLevels() ) {
-			foreach( Entity entity : level.getEntities() ) {
+		for( Level level : getServer().getLevels().values() ) {
+			for( Entity entity : level.getEntities() ) {
 				if( entity instanceof EntityCreature )
 					continue;
-				if( entity instanceof BlockEntity )
-					continue;
-				if( config.get( "Tree planting" ) == "on" ) {
+				if((Boolean) config.get( "Tree planting" ) ) {
 					if( isOldEntity( entity ) ) {
 						oldEntities.remove( entity );
 						plantTree( entity, level );
