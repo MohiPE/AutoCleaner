@@ -1,5 +1,0 @@
-name: AutoCleaner
-author: MohiPE
-main: mohi.autocleaner.AutoCleaner
-version: "1.0"
-api: ["1.0.0"]
