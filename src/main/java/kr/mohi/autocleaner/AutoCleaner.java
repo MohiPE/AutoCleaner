@@ -1,12 +1,13 @@
 /**
-	*		@author : MohiPE
-	*		@since : 2016.3.18
-	*		@E-Mail : dreamaker7770@gmail.com
-	*/
+ * @author : MohiPE
+ * @since : 2016.3.18
+ * @email : dreamaker7770@gmail.com
+ */
 
 
-package mohi.autocleaner;
+package kr.mohi.autocleaner;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Random;
@@ -28,13 +29,14 @@ public class AutoCleaner extends PluginBase implements Listener {
 	
 	@Override
 	public void onEnable() {
+		getDataFolder().mkdir();
 		this.config = (LinkedHashMap<String, Object>) (new Config( getDataFolder() + "/config.yml", Config.YAML, new LinkedHashMap<String, Object>() {
 			{
 				put( "Tree planting", true );
 			}
 		})).getAll();	
 		getServer().getPluginManager().registerEvents( this, this );
-		getServer().getScheduler().scheduleRepeatingTask(new AutoCleanerTask(this), 20 * 60 * 2);
+		getServer().getScheduler().scheduleRepeatingTask(new AutoCleanerTask(this), 20 * 5);
 	}
 	public void onDisable() {
 		this.save();
@@ -50,14 +52,14 @@ public class AutoCleaner extends PluginBase implements Listener {
 		NukkitRandom random = new NukkitRandom();
 		int meta = new Random().nextInt(6);
 		if(level.getBlock( vector3 ).getId() == 2 && level.getBlock( vector3 ).getId() == 3) {
-			level.setBlock( vector3.add( 0, 1, 0 ) , Block.get( 6, meta ));
+			level.setBlock( vector3.add( 0, 1, 0 ) , Block.get( Block.SAPLING, meta ));
 			if(new Random().nextInt(2) == 0)
 				ObjectTree.growTree( level, (int) vector3.getX(), (int) vector3.getY(), (int) vector3.getZ(), random );
-			return;
 		}
+		entity.close();
 	}
 	public void entityCleaner() {
-		for( Level level : getServer().getLevels().values() ) {
+		for (Level level : new ArrayList<Level>(getServer().getLevels().values())) {
 			for( Entity entity : level.getEntities() ) {
 				if( entity instanceof EntityCreature )
 					continue;
@@ -67,7 +69,7 @@ public class AutoCleaner extends PluginBase implements Listener {
 						plantTree( entity, level );
 						continue;
 					}
-					oldEntities.add( entity );
+					else oldEntities.add( entity );
 				}
 				else entity.close();
 			}
