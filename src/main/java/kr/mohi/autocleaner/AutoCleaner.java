@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockDirt;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityCreature;
 import cn.nukkit.event.Listener;
@@ -52,7 +53,7 @@ public class AutoCleaner extends PluginBase implements Listener {
 		Vector3 vector3 = new Vector3( x, y, z );
 		NukkitRandom random = new NukkitRandom();
 		int meta = new Random().nextInt(6);
-		if(level.getBlock( vector3 ).getId() == 2 || level.getBlock( vector3 ).getId() == 3) {
+		if(level.getBlock( vector3 ) instanceof BlockDirt) {
 			level.setBlock( vector3.add( 0, 1, 0 ) , Block.get( Block.SAPLING, meta ));
 			if(new Random().nextInt(2) == 0)
 				ObjectTree.growTree( level, (int) vector3.getX(), (int) vector3.getY(), (int) vector3.getZ(), random );
