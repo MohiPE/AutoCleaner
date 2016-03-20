@@ -12,8 +12,9 @@ class AutoCleanerTask extends PluginTask<AutoCleaner> {
 	public AutoCleanerTask(AutoCleaner owner) {
 		super(owner);
 	}
+
 	@Override
-	public void onRun( int currentTick ) {
+	public void onRun(int currentTick) {
 		owner.entityCleaner();
 	}
 }
